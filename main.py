@@ -69,60 +69,64 @@ def get_producer(credits):
     return None  # Return None if no producer is found
 
 
-# Main function to fetch movie data for a range of years
-def fetch_movie_data(year_range):
-    movie_data = []  # List to store movie data
+def get_movie_content_rating(movie_id):
+    # Fetch release dates and certifications for the movie
+    url = f"{BASE_URL}/movie/{movie_id}/release_dates?api_key={API_KEY}"
+    response = requests.get(url)
+    release_data = response.json()
 
-    # Loop over each year in the provided range
+    # Look for the US certification (or change this to your preferred country)
+    for entry in release_data.get("results", []):
+        if (
+            entry["iso_3166_1"] == "US"
+        ):  # Look for US ratings (adjust country code if needed)
+            for release in entry["release_dates"]:
+                if "certification" in release and release["certification"]:
+                    return release["certification"]  # Return the first available rating
+
+    return None  # Return None if no certification is found
+
+
+def fetch_movie_data(year_range):
+    movie_data = []
+
     for year in year_range:
         print(f"Fetching movies from {year}...")
-        # Fetch movies released in the current year
         movies = fetch_movies_by_year(year)
 
-        # Loop over each movie returned for that year
         for movie in movies:
-            # Fetch detailed information about the movie, including credits
             movie_details = get_movie_details(movie["id"])
-            credits = movie_details.get("credits", {})  # Get the credits information
+            credits = movie_details.get("credits", {})
 
-            # Append the movie data to the list as a dictionary
-            print(movie_details.get("title"))
+            # Fetch the content rating
+            content_rating = get_movie_content_rating(movie["id"])
+
             movie_data.append(
                 {
-                    "Title": movie_details.get("title"),  # Movie title
-                    "Year": movie_details.get("release_date", "").split("-")[
-                        0
-                    ],  # Year of release
-                    "Director": get_director(credits),  # Director's name
-                    "Producer": get_producer(credits),  # Producer's name
+                    "Title": movie_details.get("title"),
+                    "Year": movie_details.get("release_date", "").split("-")[0],
+                    "Director": get_director(credits),
+                    "Producer": get_producer(credits),
                     "Genres": ", ".join(
                         [genre["name"] for genre in movie_details.get("genres", [])]
-                    ),  # List of genres
-                    "Summary": movie_details.get("overview"),  # Movie summary
-                    "Duration": movie_details.get(
-                        "runtime"
-                    ),  # Movie duration in minutes
-                    "Budget": movie_details.get("budget"),  # Movie budget
-                    "Revenue": movie_details.get("revenue"),  # Movie revenue
-                    "Ratings": movie_details.get(
-                        "vote_average"
-                    ),  # Average viewer rating
-                    "Content Rating": movie_details.get(
-                        "adult"
-                    ),  # 'True' if adult content
-                    "Movie ID": movie["id"],  # Movie ID
+                    ),
+                    "Summary": movie_details.get("overview"),
+                    "Duration": movie_details.get("runtime"),
+                    "Budget": movie_details.get("budget"),
+                    "Revenue": movie_details.get("revenue"),
+                    "Ratings": movie_details.get("vote_average"),
+                    "Content Rating": content_rating,  # Use the fetched content rating
+                    "Movie ID": movie["id"],
                 }
             )
 
-        # Add a delay of 1 second to avoid hitting the API rate limit
-        time.sleep(1)
+        time.sleep(1)  # To avoid rate-limiting
 
-    # Return the list of movie data
     return movie_data
 
 
 # Define the range of years (from 1964 to 2023) to fetch movie data for
-year_range = range(2021, 2022)
+year_range = range(2023, 2024)
 
 # Fetch the movie data for the specified range of years
 movies = fetch_movie_data(year_range)
