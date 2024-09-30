@@ -165,7 +165,7 @@ cython_debug/
 
 # Project Specific Ignore Settings
 movie_db/
-.csv
+*.csv
 
 #OS specific
-.DS_Store
+*.DS_Store
