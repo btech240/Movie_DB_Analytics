@@ -36,3 +36,8 @@ This project uses the following Python packages:
 *requests: for making HTTP requests to the TMDb API.
 *python-dotenv: for loading environment variables.
 *ftfy: for fixing text encoding issues.
+
+Set up environment variables:
+
+Create a .env file in the project directory and add your TMDb API key like this:
+API_KEY=your_tmdb_api_key
