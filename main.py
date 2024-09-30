@@ -1,6 +1,7 @@
 import os
 import time
 
+import ftfy  # Import FTFY library to clean text
 import pandas as pd
 import requests
 from dotenv import load_dotenv
@@ -124,6 +125,11 @@ def get_movie_content_rating(movie_id):
             return None
 
 
+# Function to clean text using FTFY
+def clean_text(text):
+    return ftfy.fix_text(text) if text else text
+
+
 # Function to fetch movie data for a range of years
 def fetch_movie_data(year_range):
     movie_data = []
@@ -149,17 +155,19 @@ def fetch_movie_data(year_range):
 
             print(f"Adding {movie_details.get('title')} - Duration: {runtime} minutes")
 
-            # Collecting all important and interesting data points
+            # Collecting all important and interesting data points, and cleaning text fields
             movie_data.append(
                 {
-                    "Title": movie_details.get("title"),
+                    "Title": clean_text(movie_details.get("title")),
                     "Year": movie_details.get("release_date", "").split("-")[0],
-                    "Director": get_director(credits),
-                    "Producer": get_producer(credits),
-                    "Genres": ", ".join(
-                        [genre["name"] for genre in movie_details.get("genres", [])]
+                    "Director": clean_text(get_director(credits)),
+                    "Producer": clean_text(get_producer(credits)),
+                    "Genres": clean_text(
+                        ", ".join(
+                            [genre["name"] for genre in movie_details.get("genres", [])]
+                        )
                     ),
-                    "Summary": movie_details.get("overview"),
+                    "Summary": clean_text(movie_details.get("overview")),
                     "Duration": runtime,
                     "Budget": movie_details.get("budget"),
                     "Revenue": movie_details.get("revenue"),
@@ -168,25 +176,37 @@ def fetch_movie_data(year_range):
                     "Popularity": movie_details.get("popularity"),
                     "Content Rating": content_rating,
                     "Original Language": movie_details.get("original_language"),
-                    "Production Companies": ", ".join(
-                        [
-                            company["name"]
-                            for company in movie_details.get("production_companies", [])
-                        ]
+                    "Production Companies": clean_text(
+                        ", ".join(
+                            [
+                                company["name"]
+                                for company in movie_details.get(
+                                    "production_companies", []
+                                )
+                            ]
+                        )
                     ),
-                    "Production Countries": ", ".join(
-                        [
-                            country["name"]
-                            for country in movie_details.get("production_countries", [])
-                        ]
+                    "Production Countries": clean_text(
+                        ", ".join(
+                            [
+                                country["name"]
+                                for country in movie_details.get(
+                                    "production_countries", []
+                                )
+                            ]
+                        )
                     ),
-                    "Spoken Languages": ", ".join(
-                        [
-                            language["name"]
-                            for language in movie_details.get("spoken_languages", [])
-                        ]
+                    "Spoken Languages": clean_text(
+                        ", ".join(
+                            [
+                                language["name"]
+                                for language in movie_details.get(
+                                    "spoken_languages", []
+                                )
+                            ]
+                        )
                     ),
-                    "Tagline": movie_details.get("tagline"),
+                    "Tagline": clean_text(movie_details.get("tagline")),
                     "Adult": movie_details.get("adult"),
                     "Movie ID": movie["id"],
                 }
@@ -198,7 +218,7 @@ def fetch_movie_data(year_range):
 
 
 # Define the range of years (you can adjust the range as needed)
-year_range = range(2023, 2024)
+year_range = range(1970, 2025)
 
 # Fetch the movie data for the specified range of years
 movies = fetch_movie_data(year_range)
