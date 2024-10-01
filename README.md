@@ -82,3 +82,29 @@ For each movie, the following details are extracted:
     -Tagline
     -Adult content flag
     -Movie ID (from TMDb)
+
+## Skipping Short Movies
+
+The script excludes movies with a runtime of less than 60 minutes. This is useful for focusing on full-length films rather than short films or documentaries.
+Data Cleaning with FTFY
+
+To ensure that the text data is properly readable and free from encoding issues (such as strange symbols or improper character encodings), the FTFY library is used. This library fixes common encoding problems in text and ensures that the data extracted is clean and human-readable.
+
+For example, if a movie title contains unusual characters due to encoding issues, FTFY will correct it so that it displays properly in the final output.
+Usage
+
+The script currently fetches movie data for the year range 2023–2024. If you wish to fetch data for a different year or range, you can adjust the year_range variable:
+
+year_range = range(2010, 2020)  # Fetch movies from 2010 to 2019
+
+Output
+
+The fetched movie data will be saved as a CSV file named movie_data.csv in the project directory. You can analyze this file using data analysis tools like Excel, Google Sheets, or any Python-based data analysis libraries like pandas or numpy.
+Example CSV Output
+
+The CSV file will contain columns like:
+
+| Title         | Year | Director    | Producer     | Genres | Summary            | Duration | Budget  | Revenue  | Ratings | Content Rating |
+|---------------|------|-------------|--------------|--------|--------------------|----------|---------|----------|---------|----------------|
+| Example Movie | 2023 | Jane Doe    | John Smith   | Drama  | A great film.       | 120      | 1000000 | 5000000  | 7.5     | PG-13           |
+| Another Movie | 2023 | Someone Else| Producer Name| Action | Exciting action.    | 90       | 500000  | 2000000  | 6.8     | R               |
