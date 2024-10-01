@@ -40,4 +40,5 @@ This project uses the following Python packages:
 Set up environment variables:
 
 Create a .env file in the project directory and add your TMDb API key like this:
-API_KEY=your_tmdb_api_key
+
+```API_KEY=your_tmdb_api_key```
