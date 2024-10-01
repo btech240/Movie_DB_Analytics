@@ -42,3 +42,43 @@ Set up environment variables:
 Create a .env file in the project directory and add your TMDb API key like this:
 
 ```API_KEY=your_tmdb_api_key```
+
+## How the Script Works
+
+The script fetches movie data from the TMDb API for a range of years, processes that data, and stores it in a CSV file.
+API Requests
+
+The script uses the TMDb API to:
+
+    Discover movies by release year.
+    Retrieve movie details, including the director, producer, genres, and more.
+    Fetch movie content ratings.
+
+The script makes GET requests to different TMDb endpoints using the requests library.
+Handling Rate Limits
+
+To prevent exceeding TMDb's API rate limits, the script checks for HTTP 429 responses and pauses the execution for the time specified in the Retry-After header. This ensures smooth data fetching without interruptions.
+Data Points Extracted
+
+For each movie, the following details are extracted:
+
+    -Title
+    -Year of release
+    -Director
+    -Producer
+    -Genres
+    -Summary (Overview)
+    -Duration (in minutes)
+    -Budget
+    -Revenue
+    -Ratings (Average vote score)
+    -Vote count
+    -Popularity
+    -Content Rating (MPAA or equivalent)
+    -Original Language
+    -Production Companies
+    -Production Countries
+    -Spoken Languages
+    -Tagline
+    -Adult content flag
+    -Movie ID (from TMDb)
